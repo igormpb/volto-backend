@@ -17,21 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CredentialsService {
 
-
     @Autowired
     AccountRepository accountRepository;
 
-
     public void Register(PostCredentialsRegisterRequest body) {
         try {
-
-
             String passwordHash = BCrypt.withDefaults().hashToString(12, body.getPassword().toCharArray());
-            var account = AccountEntity.builder().email(body.getEmail()).password(passwordHash).name(body.getName()).build();
+            var account = AccountEntity.builder()
+                    .email(body.getEmail())
+                    .password(passwordHash)
+                    .name(body.getName())
+                    .build();
 
             var result = accountRepository.findByEmail(body.getEmail());
             if (result != null) {
-                throw new HandleErros("Conta já existe, por favor tente realizar o login", HttpStatus.BAD_REQUEST);
+                throw new HandleErros("conta já existe, por favor tente realizar o login", HttpStatus.BAD_REQUEST);
             }
 
             accountRepository.save(account);
@@ -61,12 +61,10 @@ public class CredentialsService {
 
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.create().withClaim("email", account.getEmail()).sign(algorithm).toString();
-        } catch (JWTCreationException e) {
-            throw new HandleErros("Não foi possível realizar o login, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         } catch (MongoException e) {
             throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new HandleErros("Não foi possível realizar o login, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+            throw new HandleErros("não foi possível realizar o login, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 }
