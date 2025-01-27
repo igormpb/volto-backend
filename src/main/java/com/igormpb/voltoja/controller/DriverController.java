@@ -4,7 +4,6 @@ import com.igormpb.voltoja.errors.HandleErros;
 import com.igormpb.voltoja.request.PostDriverRegisterRequest;
 import com.igormpb.voltoja.response.ResponseErr;
 import com.igormpb.voltoja.service.DriverService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,7 @@ public class DriverController {
     }
 
     @GetMapping("/detail/{plate}")
-    public ResponseEntity DetailByPlate(@PathVariable(value = "plate") String plate){
+    public ResponseEntity DetailByPlate(@PathVariable(value = "id") String plate){
         try {
             var data = driverService.DetailByPlate(plate);
             return ResponseEntity.ok(data);
@@ -61,7 +60,7 @@ public class DriverController {
     }
 
     @DeleteMapping("/delete/{plate}")
-    public ResponseEntity<Void> deleteByPlate(@PathVariable(value = "plate") String plate) {
+    public ResponseEntity<Void> deleteByPlate(@PathVariable(value = "id") String plate) {
         try {
             driverService.DeleteByPlate(plate);
             return ResponseEntity.noContent().build(); // Retorna 204 No Content

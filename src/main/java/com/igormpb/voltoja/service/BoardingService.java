@@ -44,4 +44,11 @@ public class BoardingService {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
+    public void DeleteById(String id){
+        try{
+            boardingRepository.deleteById(id);
+        }catch (Exception e){
+            throw new HandleErros("Não foi possível deletar a viagem, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

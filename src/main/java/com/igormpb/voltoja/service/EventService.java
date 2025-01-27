@@ -53,6 +53,21 @@ public class EventService {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
+    public void Delete(String id){
+        try{
+            eventRepository.deleteById(id);
+        }catch (Exception e){
+            throw new HandleErros("Não foi possível deletar o evento,tente novamente mais tarde",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public List<EventEntity> AllByProducer(String id){
+        try{
+            return eventRepository.findByProducerId(id);
+        } catch (Exception e) {
+            throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     public EventEntity DetailById(String id){
         try{

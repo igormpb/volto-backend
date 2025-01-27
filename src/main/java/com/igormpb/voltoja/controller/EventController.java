@@ -1,6 +1,7 @@
 package com.igormpb.voltoja.controller;
 
 import com.igormpb.voltoja.entity.BoardingEntity;
+import com.igormpb.voltoja.entity.EventEntity;
 import com.igormpb.voltoja.errors.HandleErros;
 import com.igormpb.voltoja.request.PostEventRegisterRequest;
 import com.igormpb.voltoja.response.ResponseErr;
@@ -48,7 +49,7 @@ public class EventController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity DetailById(@PathVariable(value = "id") String id) {
+    public ResponseEntity DetailById(@PathVariable String id) {
         try {
             var data = eventService.DetailById(id);
             return ResponseEntity.ok(data);
@@ -57,11 +58,32 @@ public class EventController {
         }
     }
 
-
+    @GetMapping("/producer/{id}")
+    public ResponseEntity EventByProducerId(@PathVariable String id){
+        try {
+            List<EventEntity> events = eventService.AllByProducer(id);
+            return ResponseEntity.ok(events);
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+    }
     @GetMapping("/{id}/boarding")
-    public ResponseEntity BoardingByEventId(@PathParam(value = "id") String id) {
-        List<BoardingEntity> boardings = boardingService.findAllByEventId(id);
-        return ResponseEntity.ok(boardings);
+    public ResponseEntity BoardingByEventId(@PathVariable String id) {
+        try {
+            List<BoardingEntity> boardings = boardingService.findAllByEventId(id);
+            return ResponseEntity.ok(boardings);
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity DeleteById(@PathVariable String id){
+        try {
+            eventService.DetailById(id);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+    }
 }

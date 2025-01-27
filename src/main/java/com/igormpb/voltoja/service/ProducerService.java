@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProducerService {
@@ -29,6 +31,33 @@ public class ProducerService {
             producerRepository.save(produce.build());
         }catch (Exception e){
             throw new HandleErros("Não foi possivel cadastrar o produtor, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+        }
+    }
+    public List<ProducerEntity> All(){
+        try {
+            return producerRepository.findAll();
+        }catch (Exception e){
+            throw new HandleErros("Não foi possível listar os produtores, tente novamente mais tarde",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ProducerEntity findById(String id){
+        try{
+            var produce = producerRepository.findById(id);
+            if (produce.isEmpty()){
+                throw new HandleErros("Produtor não encontrado", HttpStatus.NOT_FOUND);
+            }
+            return produce.get();
+        }catch (Exception e){
+            throw new HandleErros("Não foi possível encontrar o produtor, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void deleteById(String id){
+        try{
+            producerRepository.deleteById(id);
+        }catch (Exception e){
+            throw new HandleErros("Não foi possível deletar o produtor, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 }
