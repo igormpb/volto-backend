@@ -16,6 +16,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class DriverEntity {
 
 

@@ -1,18 +1,17 @@
 package com.igormpb.voltoja.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "boarding")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BoardingEntity {
 
 
@@ -20,6 +19,9 @@ public class BoardingEntity {
     private String id;
     private AddressEntity address;
     private Integer price;
-
+    @Field("driver_id")
+    private String driverId;
+    @Field("event_id")
+    private String eventId;
 
 }
