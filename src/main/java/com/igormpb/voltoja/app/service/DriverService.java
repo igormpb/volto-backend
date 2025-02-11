@@ -69,10 +69,10 @@ public class DriverService {
         }
     }
 
-    public void EditByPlate(String plate , PostDriverRegisterRequest updatedDriver){
+    public void EditById(String id , PostDriverRegisterRequest updatedDriver){
         try {
-            var driver = driverRepository.findByPlate(plate);
-            System.out.println(driver.getName());
+            var driver = driverRepository.findById(id).get();
+
 
             // Atualizar os campos necessários
             if (updatedDriver.getName() != null) {

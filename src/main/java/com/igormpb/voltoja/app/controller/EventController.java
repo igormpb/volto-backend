@@ -36,6 +36,16 @@ public class EventController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity Edit(@PathVariable String id , @RequestBody PostEventRegisterRequest body){
+        try {
+            eventService.EditById(id,body);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+    }
     @GetMapping("/list")
     public ResponseEntity All() {
         try {
@@ -57,7 +67,7 @@ public class EventController {
         }
     }
 
-    @GetMapping("/producer/{id}")
+    @GetMapping("/producers/{id}")
     public ResponseEntity EventByProducerId(@PathVariable String id){
         try {
             List<EventEntity> events = eventService.AllByProducer(id);
@@ -79,7 +89,7 @@ public class EventController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity DeleteById(@PathVariable String id){
         try {
-            eventService.DetailById(id);
+            eventService.Delete(id);
             return ResponseEntity.noContent().build();
         }catch (HandleErros e){
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

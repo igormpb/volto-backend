@@ -19,7 +19,6 @@ public class PostEventRegisterRequest {
     private String startTime = "";
     private String endTime = "";
     private String bannerUrl = "";
-    private String photoUrl = "";
     private String type = "";
     private String createdAt = "";
     private String updatedAt = "";
@@ -49,9 +48,7 @@ public class PostEventRegisterRequest {
         if (this.bannerUrl.isEmpty()) {
             return "Banner é obrigatório";
         }
-        if (this.photoUrl.isEmpty()) {
-            return "Foto é obrigatório";
-        }
+
         return null;
     }
 }

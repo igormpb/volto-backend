@@ -39,10 +39,10 @@ public class DriverController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
-    @PostMapping("/edit/{plate}")
-    public ResponseEntity EditByPlate(@PathVariable(value = "plate") String plate , @RequestBody PostDriverRegisterRequest body){
+    @PostMapping("/edit/{id}")
+    public ResponseEntity EditById(@PathVariable(value = "id") String id , @RequestBody PostDriverRegisterRequest body){
         try {
-            driverService.EditByPlate(plate,body);
+            driverService.EditById(id,body);
             return ResponseEntity.noContent().build();
         }catch (HandleErros e){
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

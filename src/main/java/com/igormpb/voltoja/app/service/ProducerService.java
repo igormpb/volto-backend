@@ -33,6 +33,27 @@ public class ProducerService {
         }
     }
 
+    public void EditById(String id, PostProducerRegisterRequest updatedProducer){
+        try {
+            var producer = producerRepository.findById(id).get();
+
+
+            // Atualizar os campos necessários
+            if (updatedProducer.getName() != null) {
+                producer.setName(updatedProducer.getName());
+            }
+            if (updatedProducer.getPhotoUrl() != null) {
+                producer.setPhotoUrl(updatedProducer.getPhotoUrl());
+            }
+            producer.setUpdatedAt(LocalDate.now().toString());
+
+            // Salvar o documento atualizado
+            producerRepository.save(producer);
+        }catch (Exception e){
+            throw new HandleErros("Não foi possivel editar o evento, tente novamente mais tarde", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public List<ProducerEntity> All() {
         try {
             return producerRepository.findAll();

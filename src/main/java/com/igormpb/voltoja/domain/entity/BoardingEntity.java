@@ -23,5 +23,9 @@ public class BoardingEntity {
     private String driverId;
     @Field("event_id")
     private String eventId;
+    @Field("time_go")
+    private String timeToGo;
+    @Field("time_out")
+    private String timeToOut;
 
 }

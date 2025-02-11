@@ -28,6 +28,15 @@ public class BoardingController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
+    @PostMapping("edit/{id}")
+    public ResponseEntity Edit(@PathVariable String id, @RequestBody PostBoardingRegisterRequest body){
+        try{
+            boardingService.EditById(id,body);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity DeleteById(@PathVariable String id){
         try{

@@ -29,7 +29,15 @@ public class ProducerController {
         }
 
     }
-
+    @PostMapping("/edit/{id}")
+    public ResponseEntity Edit(@PathVariable String id, @RequestBody PostProducerRegisterRequest body){
+        try {
+            producerService.EditById(id,body);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e){
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+    }
     @GetMapping("/list")
     public ResponseEntity All(){
         try{

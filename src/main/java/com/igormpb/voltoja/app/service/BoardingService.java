@@ -24,7 +24,9 @@ public class BoardingService {
                     .address(body.getAddress())
                     .driverId(body.getDriverId())
                     .eventId(body.getEventId())
-                    .price(body.getPrice());
+                    .price(body.getPrice())
+                    .timeToGo(body.getTimeGo())
+                    .timeToOut(body.getTimeOut());
             var result = boardingRepository.findByDriverId(body.getDriverId());
             System.out.println("Resultado do findById: " + result);
             if (!result.isEmpty()) {
@@ -36,6 +38,39 @@ public class BoardingService {
         } catch (MongoException e) {
             throw new HandleErros("não foi possível criar sua viagem, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
 
+        }
+    }
+
+    public void EditById(String id, PostBoardingRegisterRequest updatedBoarding){
+        try {
+            var boarding = boardingRepository.findById(id).get();
+
+
+            // Atualizar os campos necessários
+            if (updatedBoarding.getAddress() != null) {
+                boarding.setAddress(updatedBoarding.getAddress());
+            }
+            if (updatedBoarding.getDriverId() != null) {
+                boarding.setDriverId(updatedBoarding.getDriverId());
+            }
+            if (updatedBoarding.getEventId() != null) {
+                boarding.setEventId(updatedBoarding.getEventId());
+            }
+            if (updatedBoarding.getPrice() != null) {
+                boarding.setPrice(updatedBoarding.getPrice());
+            }
+            if (updatedBoarding.getTimeGo() != null) {
+                boarding.setTimeToGo(updatedBoarding.getTimeGo());
+            }
+            if (updatedBoarding.getTimeOut() != null) {
+                boarding.setTimeToOut(updatedBoarding.getTimeOut());
+            }
+
+
+            // Salvar o documento atualizado
+            boardingRepository.save(boarding);
+        }catch (Exception e){
+            throw new HandleErros("Não foi possivel editar a viagem, tente novamente mais tarde", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

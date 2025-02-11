@@ -29,9 +29,7 @@ public class EventEntity {
     @Field("end_time")
     private String endTime;
     @Field("banner_url")
-    private String bannerUrl;
-    @Field("photo_url")
-    private String photoUrl;
+    private String bannerUrl;;
     private String type;
     @Field("created_at")
     private String createdAt;
