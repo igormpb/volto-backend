@@ -1,8 +1,9 @@
 package com.igormpb.voltoja.domain.adapter;
 
 import com.igormpb.voltoja.domain.errors.HandleErros;
+import com.igormpb.voltoja.domain.response.CreateCheckoutPageAdapterResponse;
 
 public interface ICardAdapter {
 
-    public String CreateCheckoutPage(Long price, String name) throws HandleErros;
+    public CreateCheckoutPageAdapterResponse CreateCheckoutPage(Long price, String name) throws HandleErros;
 }

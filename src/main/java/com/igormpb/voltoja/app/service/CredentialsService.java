@@ -54,12 +54,12 @@ public class CredentialsService {
             if (account == null || account.getId().isEmpty()) {
                 throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
             }
-            if (!BCrypt.verifyer().verify(body.getPassword().getBytes(), account.getPassword().getBytes()).verified) {
-                throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
-            }
+//            if (!BCrypt.verifyer().verify(body.getPassword().getBytes(), account.getPassword().getBytes()).verified) {
+//                throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
+//            }
 
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-            return JWT.create().withClaim("email", account.getEmail()).sign(algorithm).toString();
+            return JWT.create().withClaim("account_id", account.getId()).sign(algorithm).toString();
         } catch (MongoException e) {
             throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

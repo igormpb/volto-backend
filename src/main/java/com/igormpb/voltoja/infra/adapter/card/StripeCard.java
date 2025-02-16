@@ -2,6 +2,7 @@ package com.igormpb.voltoja.infra.adapter.card;
 
 import com.igormpb.voltoja.domain.adapter.ICardAdapter;
 import com.igormpb.voltoja.domain.errors.HandleErros;
+import com.igormpb.voltoja.domain.response.CreateCheckoutPageAdapterResponse;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -18,7 +19,7 @@ public class StripeCard implements ICardAdapter {
     }
 
     @Override
-    public String CreateCheckoutPage(Long price, String name) throws HandleErros{
+    public CreateCheckoutPageAdapterResponse CreateCheckoutPage(Long price, String name) throws HandleErros{
         try {
          SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -41,8 +42,9 @@ public class StripeCard implements ICardAdapter {
                     )
                     .build();
             Session session = Session.create(params);
-            
-            return session.getUrl();
+
+            var response = new CreateCheckoutPageAdapterResponse(session.getId(), session.getUrl(), session.getAmountTotal(), session.getPaymentStatus());
+            return response;
         }catch (StripeException e) {
             System.out.println(e.getMessage());
             throw new HandleErros("Não foi possível criar um pagamento", HttpStatus.NOT_FOUND);

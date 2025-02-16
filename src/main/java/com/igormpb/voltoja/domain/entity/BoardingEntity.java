@@ -1,10 +1,11 @@
 package com.igormpb.voltoja.domain.entity;
 
-
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.List;
 
 @Document(collection = "boarding")
 @Getter
@@ -12,8 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BoardingEntity {
 
+
+public class BoardingEntity {
 
     @Id
     private String id;
@@ -27,5 +29,7 @@ public class BoardingEntity {
     private String timeToGo;
     @Field("time_out")
     private String timeToOut;
+    @Field("account_in_boarding")
+    private List<AccountInBoarding> accountInBoarding;
 
 }
