@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/credentials")
 public class CredentialsController {
@@ -47,11 +49,17 @@ public class CredentialsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
         }
         try {
-            String token = credentialsService.Login(body);
-            return ResponseEntity.ok(new PostCredentialsLoginResponse(token));
-        }catch (HandleErros e) {
+            Map<String, Object> response = credentialsService.Login(body);
+            return ResponseEntity.ok(new PostCredentialsLoginResponse(
+                    (String) response.get("token"),
+                    (String) response.get("email"),
+                    (String) response.get("name"),
+                    (String) response.get("number")
+            ));
+        } catch (HandleErros e) {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
+
 
 }

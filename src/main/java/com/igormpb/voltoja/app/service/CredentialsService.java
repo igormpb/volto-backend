@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class CredentialsService {
 
@@ -26,6 +29,7 @@ public class CredentialsService {
                     .email(body.getEmail())
                     .password(passwordHash)
                     .name(body.getName())
+                    .phoneNumber(body.getPhoneNumber())
                     .build();
 
             var result = accountRepository.findByEmail(body.getEmail());
@@ -42,7 +46,7 @@ public class CredentialsService {
     }
 
 
-    public String Login(PostCredentialsLoginRequest body) {
+    public Map<String, Object> Login(PostCredentialsLoginRequest body) {
         try {
             String jwtSecret = System.getenv("JWT_SCREET");
 
@@ -54,16 +58,26 @@ public class CredentialsService {
             if (account == null || account.getId().isEmpty()) {
                 throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
             }
-//            if (!BCrypt.verifyer().verify(body.getPassword().getBytes(), account.getPassword().getBytes()).verified) {
-//                throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
-//            }
+            if (!BCrypt.verifyer().verify(body.getPassword().getBytes(), account.getPassword().getBytes()).verified) {
+                throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
+            }
 
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-            return JWT.create().withClaim("account_id", account.getId()).sign(algorithm).toString();
+            String token = JWT.create().withClaim("account_id", account.getId()).sign(algorithm);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("email", account.getEmail());
+            response.put("name", account.getName());
+            response.put("phoneNumber", account.getPhoneNumber());
+
+            return response;
         } catch (MongoException e) {
             throw new HandleErros("e-mail e/ou senha invalido", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            e.printStackTrace(); // Log do erro para depuração
             throw new HandleErros("não foi possível realizar o login, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
+
 }

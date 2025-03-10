@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,7 +41,22 @@ public class DriverService {
 
     public List<DriverEntity> All(){
         try {
-            return driverRepository.findAll();
+            List<DriverEntity> drivers = driverRepository.findAll();
+            List<DriverEntity> newDrivers = new ArrayList<>();
+            for (DriverEntity driver : drivers){
+                DriverEntity newDriver = DriverEntity.builder()
+                        .id(driver.getId())
+                        .name(driver.getName())
+                        .type(driver.getType())
+                        .quantity(driver.getQuantity())
+                        .plate(driver.getPlate())
+                        .music(driver.getMusic())
+                        .snow(driver.getSnow())
+                        .build();
+
+                newDrivers.add(newDriver);
+            }
+            return newDrivers;
         }catch (Exception e){
             throw new HandleErros("não foi possível listar os motoristas, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }

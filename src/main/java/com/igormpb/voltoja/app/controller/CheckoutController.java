@@ -1,17 +1,33 @@
-package com.igormpb.voltoja.app.controller;
+    package com.igormpb.voltoja.app.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+    import com.igormpb.voltoja.app.service.CheckoutService;
+    import com.igormpb.voltoja.domain.errors.HandleErros;
+    import jakarta.servlet.http.HttpServletRequest;
+    import com.igormpb.voltoja.domain.request.PostPaymentCardWithCheckoutRequest;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/checkout")
-public class CheckoutController {
+    import java.util.List;
 
-    @PostMapping
-    public ResponseEntity Checkout() {
-        return ResponseEntity.ok(null);
+    @RestController
+    @RequestMapping("/checkout")
+    public class CheckoutController {
+        public record UrlResponse(String url) {}
+
+        @Autowired
+        CheckoutService checkoutService;
+
+        @PostMapping("/{id}")
+        public ResponseEntity Checkout(@PathVariable(value = "id") String id, @RequestBody List<PostPaymentCardWithCheckoutRequest> request, HttpServletRequest httpRequest) {
+            try{
+                String accountId = (String) httpRequest.getAttribute("account_id");
+                var url = checkoutService.PaymentCardCheckoutURL(id,request,accountId);
+
+                return ResponseEntity.ok(new UrlResponse(url));
+            }catch (HandleErros e){
+                return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+            }
+        }
+
     }
-
-}

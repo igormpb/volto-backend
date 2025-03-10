@@ -1,19 +1,16 @@
 package com.igormpb.voltoja.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class PostCredentialsRegisterRequest {
 
     private String email = "";
     private String password = "";
     private String name = "";
+    private String phoneNumber = "";
 
     public String Validate() {
         if (this.email.isEmpty()) {
@@ -26,6 +23,9 @@ public class PostCredentialsRegisterRequest {
 
         if (this.name.isEmpty()) {
             return "nome é obrigatório";
+        }
+        if (this.phoneNumber.isEmpty()) {
+            return "número é obrigatório";
         }
 
         return null;

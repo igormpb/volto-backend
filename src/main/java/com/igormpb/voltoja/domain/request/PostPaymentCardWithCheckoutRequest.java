@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 public class PostPaymentCardWithCheckoutRequest {
 
     private String name;
-    private String document;
+    private String email;
+    private String phone;
 
 
     public void Validate() {
@@ -23,8 +24,12 @@ public class PostPaymentCardWithCheckoutRequest {
             throw new HandleErros("Nome do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
         }
 
-        if (document.isEmpty()) {
-            throw new HandleErros("Documento do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
+        if (email.isEmpty()) {
+            throw new HandleErros("Email do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        if (phone.isEmpty()) {
+            throw new HandleErros("Número do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
         }
 
     }

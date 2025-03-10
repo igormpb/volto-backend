@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "account")
 @TypeAlias("AccountEntity")
@@ -17,6 +18,7 @@ public class AccountEntity {
     private String id;
     private String name;
     private String email;
-    private String phone_number;
+    @Field("phone_number")
+    private String phoneNumber;
     private String password;
 }
