@@ -70,6 +70,7 @@ public class CredentialsService {
             response.put("email", account.getEmail());
             response.put("name", account.getName());
             response.put("phoneNumber", account.getPhoneNumber());
+            response.put("accountId", account.getId());
 
             return response;
         } catch (MongoException e) {

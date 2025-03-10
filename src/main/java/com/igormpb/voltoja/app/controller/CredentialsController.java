@@ -54,7 +54,8 @@ public class CredentialsController {
                     (String) response.get("token"),
                     (String) response.get("email"),
                     (String) response.get("name"),
-                    (String) response.get("number")
+                    (String) response.get("number"),
+                    (String) response.get("accountId")
             ));
         } catch (HandleErros e) {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

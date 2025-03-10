@@ -1,6 +1,7 @@
 package com.igormpb.voltoja.app.service;
 
 import com.igormpb.voltoja.domain.entity.BoardingEntity;
+import com.igormpb.voltoja.domain.entity.EventEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
 import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.domain.request.PostBoardingRegisterRequest;
@@ -71,6 +72,14 @@ public class BoardingService {
             boardingRepository.save(boarding);
         }catch (Exception e){
             throw new HandleErros("Não foi possivel editar a viagem, tente novamente mais tarde", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public List<BoardingEntity> All() {
+        try {
+            return boardingRepository.findAll();
+        } catch (Exception e) {
+            throw new HandleErros("não foi listar as viagens, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 
