@@ -13,8 +13,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Aplica para todas as rotas
-                        //.allowedOrigins("https://flashja.digital") // Permite apenas o frontend (substitua pela URL correta)
-                        .allowedOrigins("http://localhost:5173")
+                        .allowedOrigins("https://flashja.digital") // Permite apenas o frontend (substitua pela URL correta)
+//                        .allowedOrigins("http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
                         .allowedHeaders("*") // Permite todos os headers
                         .allowCredentials(true); // Permite envio de cookies (se necessário)

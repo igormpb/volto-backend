@@ -3,6 +3,7 @@ package com.igormpb.voltoja.app.controller;
 import com.google.gson.JsonSyntaxException;
 import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.infra.repository.CheckoutRepository;
+import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/webhook")
 public class WebhookController {
 
-    private static final String STRIPE_SECRET = "seu_webhook_secret"; // Defina seu segredo do webhook da Stripe
+    private static final String STRIPE_SECRET = "sk_test_51QmPpEHXofmbphjYHkgRar4vcxkaQEbkO67GcM0kOK9Oq3XNwGAKmk4cODPIfTYuMXefDTlj0Z1hmTsa43fRyHwg00So6QnFgS";
 
     @Autowired
     CheckoutRepository checkoutRepository;
