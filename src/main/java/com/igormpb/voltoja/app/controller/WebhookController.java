@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/webhook")
 public class WebhookController {
 
-    private static final String STRIPE_SECRET = "sk_test_51QmPpEHXofmbphjYHkgRar4vcxkaQEbkO67GcM0kOK9Oq3XNwGAKmk4cODPIfTYuMXefDTlj0Z1hmTsa43fRyHwg00So6QnFgS";
 
     @Autowired
     CheckoutRepository checkoutRepository;
@@ -33,18 +32,17 @@ public class WebhookController {
     BoardingRepository boardingReposity;
 
 
-
     @PostMapping("/stripe")
     public ResponseEntity<String> handleStripeWebhook(HttpServletRequest request) {
         try {
-            // 🔹 Lendo o corpo da requisição
             String payload = new BufferedReader(request.getReader()).lines().collect(Collectors.joining("\n"));
             String sigHeader = request.getHeader("Stripe-Signature");
 
             Event event;
 
+            Stripe.apiKey = "sk_test_51QmPpEHXofmbphjYHkgRar4vcxkaQEbkO67GcM0kOK9Oq3XNwGAKmk4cODPIfTYuMXefDTlj0Z1hmTsa43fRyHwg00So6QnFgS";
             try {
-                event = Webhook.constructEvent(payload, sigHeader, STRIPE_SECRET);
+                event = Webhook.constructEvent(payload, sigHeader, "whsec_MSP4aN0WEw7jl2cUE6wjQfVUIXRhh3Pd");
             } catch (JsonSyntaxException e) {
                 return ResponseEntity.badRequest().body("⚠️ Erro ao analisar JSON do Webhook.");
             } catch (SignatureVerificationException e) {
@@ -69,7 +67,7 @@ public class WebhookController {
                     }
                     var checkout = item.get();
                     checkout.setStatus("PAID");
-                    var boardingID =  checkout.getBoardingId();
+                    var boardingID = checkout.getBoardingId();
 
                     var itemBoarding = boardingReposity.findById(boardingID);
                     if (itemBoarding.isEmpty()) {
@@ -79,7 +77,7 @@ public class WebhookController {
 
                     var accountId = checkout.getAccountId();
                     var boarding = itemBoarding.get();
-                    boarding.getAccountInBoarding().forEach( acc -> {
+                    boarding.getAccountInBoarding().forEach(acc -> {
                         if (acc.getId().equals(accountId)) {
                             acc.setStatus("PAID");
                         }
