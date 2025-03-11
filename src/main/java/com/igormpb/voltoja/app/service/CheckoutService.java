@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class CheckoutService {
             var response = cardAdapterHandler.getAdapter().CreateCheckoutPage(price, name);
 
             //TODO PEGAR O ACCOUNT_ID
-            var data = CheckoutEntity.builder().status(response.status()).paymentId(response.id()).url(response.url()).paymentAt("").updatedAt("").createdAt("").accountId(accountId).boardingId(boardingEntity.getId()).eventId(eventEntity.getId()).build();
+            var data = CheckoutEntity.builder().status(response.status()).paymentId(response.id()).url(response.url()).paymentAt("").updatedAt(LocalDate.now().toString()).createdAt(LocalDate.now().toString()).accountId(accountId).boardingId(boardingEntity.getId()).eventId(eventEntity.getId()).build();
 
             checkoutRepository.save(data);
             if (boardingEntity.getAccountInBoarding() == null) {
