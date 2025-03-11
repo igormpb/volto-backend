@@ -57,7 +57,7 @@ public class WebhookController {
             }
 
             switch (event.getType()) {
-                case "payment_intent.succeeded":
+                case "checkout.session.async_payment_succeeded":
                     PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
                     System.out.println("💰 Pagamento recebido: " + paymentIntent.getId());
                     var item = checkoutRepository.findById(paymentIntent.getId());
