@@ -36,7 +36,6 @@ public class AuthMiddleware implements HandlerInterceptor {
             return false;
         }
 
-        System.out.println(accountId);
 
         request.setAttribute("account_id", accountId);
 

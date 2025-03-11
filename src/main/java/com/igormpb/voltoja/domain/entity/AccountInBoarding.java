@@ -9,5 +9,8 @@ import lombok.*;
 @Builder
 public class AccountInBoarding {
     private String id;
+    private String Name;
+    private String Email;
+    private String Phone;
     private String status;
 }

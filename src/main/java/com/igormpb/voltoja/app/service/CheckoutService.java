@@ -54,9 +54,14 @@ public class CheckoutService {
                 boardingEntity.setAccountInBoarding(new ArrayList<>());
             }
 
-            boardingEntity.getAccountInBoarding().add(
-                    AccountInBoarding.builder().id(accountId).status("PENDING").build()
-            );
+
+            request.forEach(r -> {
+                boardingEntity.getAccountInBoarding().add(
+                        AccountInBoarding.builder().id(accountId).Email(r.getEmail()).Phone(r.getPhone()).Name(r.getName()).status("PENDING").build()
+                );
+            });
+
+
 
             boardingRepository.save(boardingEntity);
             return response.url();
