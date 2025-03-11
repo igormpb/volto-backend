@@ -57,9 +57,13 @@ public class WebhookController {
             }
 
             switch (event.getType()) {
-                case "checkout.session.async_payment_succeeded":
+                case "checkout.session.completed":
                     Session session = (Session) stripeObject;
                     System.out.println("💰 Pagamento recebido: " + session.getId());
+                    if (!session.getPaymentStatus().equals("paid")) {
+                        System.out.println("pagamento nao foi finalizado");
+                        break;
+                    }
                     var checkout = checkoutRepository.findByPaymentId(session.getId());
                     if (checkout == null) {
                         System.out.println("pagamento nao encontradao");
@@ -85,10 +89,6 @@ public class WebhookController {
                     checkoutRepository.save(checkout);
                     boardingReposity.save(boarding);
 
-                    break;
-                case "payment_method.attached":
-                    PaymentMethod paymentMethod = (PaymentMethod) stripeObject;
-                    System.out.println("📌 Método de pagamento anexado: " + paymentMethod.getId());
                     break;
                 default:
                     System.out.println("ℹ️ Evento não tratado: " + event.getType());
