@@ -7,7 +7,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
-import com.stripe.model.PaymentIntent;
+import com.stripe.model.checkout.Session;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
@@ -58,14 +58,13 @@ public class WebhookController {
 
             switch (event.getType()) {
                 case "checkout.session.async_payment_succeeded":
-                    PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-                    System.out.println("💰 Pagamento recebido: " + paymentIntent.getId());
-                    var item = checkoutRepository.findById(paymentIntent.getId());
-                    if (item.isEmpty()) {
+                    Session session = (Session) stripeObject;
+                    System.out.println("💰 Pagamento recebido: " + session.getId());
+                    var checkout = checkoutRepository.findByPaymentId(session.getId());
+                    if (checkout == null) {
                         System.out.println("pagamento nao encontradao");
                         break;
                     }
-                    var checkout = item.get();
                     checkout.setStatus("PAID");
                     var boardingID = checkout.getBoardingId();
 
