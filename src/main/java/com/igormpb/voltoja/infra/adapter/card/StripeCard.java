@@ -43,7 +43,7 @@ public class StripeCard implements ICardAdapter {
                     .build();
             Session session = Session.create(params);
 
-            var response = new CreateCheckoutPageAdapterResponse(session.getId(), session.getUrl(), session.getAmountTotal(), session.getPaymentStatus());
+            var response = new CreateCheckoutPageAdapterResponse(session.getPaymentIntent(), session.getUrl(), session.getAmountTotal(), session.getPaymentStatus());
             return response;
         }catch (StripeException e) {
             System.out.println(e.getMessage());
