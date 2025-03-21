@@ -1,5 +1,6 @@
 package com.igormpb.voltoja.domain.request;
 
+import com.igormpb.voltoja.infra.utils.Validators;
 import lombok.*;
 
 @Getter
@@ -17,6 +18,10 @@ public class PostCredentialsRegisterRequest {
             return "e-mail é obrigatório";
         }
 
+        if (!Validators.isEmailValid(this.email)) {
+            return "e-mail é inválido";
+        }
+
         if (this.password.isEmpty()) {
             return "senha é obrigatório";
         }
@@ -24,9 +29,15 @@ public class PostCredentialsRegisterRequest {
         if (this.name.isEmpty()) {
             return "nome é obrigatório";
         }
+
         if (this.phoneNumber.isEmpty()) {
-            return "número é obrigatório";
+            return "número celular é obrigatório";
         }
+
+        if (!Validators.isCellPhoneValid(this.phoneNumber)) {
+            return "número de celular é inválido";
+        }
+
 
         return null;
     }

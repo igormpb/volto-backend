@@ -1,6 +1,7 @@
 package com.igormpb.voltoja.domain.request;
 
 
+import com.igormpb.voltoja.infra.utils.Validators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,10 @@ public class PostCredentialsLoginRequest {
     public String Validate() {
         if (this.email.isEmpty()) {
             return "e-mail é obrigatório";
+        }
+
+        if (!Validators.isEmailValid(this.email)) {
+            return "e-mail é inválido";
         }
 
         if (this.password.isEmpty()) {
