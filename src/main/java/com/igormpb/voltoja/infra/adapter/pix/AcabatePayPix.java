@@ -17,7 +17,7 @@ import java.util.UUID;
 public class AcabatePayPix implements IPixAdapter {
 
     private static final String API_URL = "https://api.abacatepay.com/v1/billing/create";
-    private static final String TOKEN = "https://api.abacatepay.com/v1/billing/create";
+    private static final String TOKEN = "abc_dev_gwh324MNsj1PeNJs23H3WfPk";
 
     @Override
     public CreateCheckoutPageAdapterResponse CreateCheckoutPage(Long price,String name, String document, String accountName, String email, String phoneNumber) {

@@ -76,7 +76,7 @@ public class CheckoutService {
         catch (Exception e) {
 
             System.out.println(e);
-            throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+            throw new HandleErros("não foi finalizar o carrinho, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -96,7 +96,6 @@ public class CheckoutService {
             if (account.isEmpty()) {
                 throw new HandleErros("Conta não encontrado", HttpStatus.NOT_FOUND);
             }
-
 
             var boardingEntity = boarding.get();
             var eventEntity = event.get();
@@ -130,7 +129,7 @@ public class CheckoutService {
         catch (Exception e) {
 
             System.out.println(e);
-            throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
+            throw new HandleErros("não foi finalizar o carrinho, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 
