@@ -101,4 +101,17 @@ public class WebhookController {
             return ResponseEntity.status(500).body("Erro interno ao processar webhook.");
         }
     }
+
+
+    @PostMapping("/acabatepay")
+    public ResponseEntity<String> handleAbacatePayWebhook(HttpServletRequest request) {
+        try {
+            String payload = new BufferedReader(request.getReader()).lines().collect(Collectors.joining("\n"));
+            System.out.println("ℹ️ Evento não tratado: " + payload);
+            return ResponseEntity.ok("✅ Webhook recebido com sucesso!");
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Erro interno ao processar webhook.");
+        }
+    }
 }

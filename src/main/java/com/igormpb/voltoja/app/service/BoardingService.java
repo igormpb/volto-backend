@@ -118,8 +118,6 @@ public class BoardingService {
                         .price(boarding.getPrice())
                         .driverId(boarding.getDriverId())
                         .eventId(boarding.getEventId())
-                        .music(boarding.getMusic())
-                        .snow(boarding.getSnow())
                         .build();
 
                 newBoardings.add(newDriver);

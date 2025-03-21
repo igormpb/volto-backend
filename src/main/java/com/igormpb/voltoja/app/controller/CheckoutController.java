@@ -2,6 +2,7 @@
 
     import com.igormpb.voltoja.app.service.CheckoutService;
     import com.igormpb.voltoja.domain.errors.HandleErros;
+    import com.igormpb.voltoja.domain.request.PostPaymentWithCheckoutRequest;
     import jakarta.servlet.http.HttpServletRequest;
     import com.igormpb.voltoja.domain.request.PostPaymentCardWithCheckoutRequest;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,23 @@
         CheckoutService checkoutService;
 
         @PostMapping("/{id}")
-        public ResponseEntity Checkout(@PathVariable(value = "id") String id, @RequestBody List<PostPaymentCardWithCheckoutRequest> request, HttpServletRequest httpRequest) {
+        public ResponseEntity CheckoutCard(@PathVariable(value = "id") String id, @RequestBody PostPaymentWithCheckoutRequest request, HttpServletRequest httpRequest) {
             try{
                 String accountId = (String) httpRequest.getAttribute("account_id");
-                var url = checkoutService.PaymentCardCheckoutURL(id,request,accountId);
+                var url = checkoutService.PaymentCardCheckoutCardURL(id,request,accountId);
+
+                return ResponseEntity.ok(new UrlResponse(url));
+            }catch (HandleErros e){
+                return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+            }
+        }
+
+
+        @PostMapping("/{id}/pix")
+        public ResponseEntity CheckoutPix(@PathVariable(value = "id") String id, @RequestBody PostPaymentWithCheckoutRequest request, HttpServletRequest httpRequest) {
+            try{
+                String accountId = (String) httpRequest.getAttribute("account_id");
+                var url = checkoutService.PaymentCardCheckoutPixURL(id,request,accountId);
 
                 return ResponseEntity.ok(new UrlResponse(url));
             }catch (HandleErros e){
