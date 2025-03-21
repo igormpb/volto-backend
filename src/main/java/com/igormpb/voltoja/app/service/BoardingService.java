@@ -1,8 +1,9 @@
 package com.igormpb.voltoja.app.service;
 
 import com.igormpb.voltoja.domain.entity.BoardingEntity;
-import com.igormpb.voltoja.domain.entity.EventEntity;
+import com.igormpb.voltoja.domain.entity.DriverEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
+import com.igormpb.voltoja.domain.request.PostEventFilterRequest;
 import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.domain.request.PostBoardingRegisterRequest;
 import com.mongodb.MongoException;
@@ -10,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Comparator;
+
 
 
 @Service
@@ -75,17 +80,51 @@ public class BoardingService {
         }
     }
 
-    public List<BoardingEntity> All() {
+    public List<BoardingEntity> findByAccountId(String accountId) {
         try {
-            return boardingRepository.findAll();
+            return boardingRepository.findByAccountId(accountId);
         } catch (Exception e) {
             throw new HandleErros("não foi listar as viagens, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public List<BoardingEntity> findAllByEventId(String eventId) {
+    public List<BoardingEntity> findAllByEventId(String eventId, PostEventFilterRequest body) {
         try {
-            return boardingRepository.findByEventId(eventId);
+            var boardings = boardingRepository.findByEventId(eventId);
+            if (body.getPrice() != null && !body.getPrice().isEmpty()){
+                if (body.getPrice().equalsIgnoreCase("low")) {
+                    boardings = boardings.stream()
+                            .sorted(Comparator.comparing(BoardingEntity::getPrice))
+                            .collect(Collectors.toList());
+                } else if (body.getPrice().equalsIgnoreCase("high")) {
+                    boardings = boardings.stream()
+                            .sorted(Comparator.comparing(BoardingEntity::getPrice).reversed())
+                            .collect(Collectors.toList());
+                }
+            }
+            if (body.getLocation() != null && !body.getLocation().isEmpty()){
+                boardings = boardings.stream()
+                        .filter(b -> b.getAddress() != null &&
+                                b.getAddress().getNeighborhood() != null &&
+                                b.getAddress().getNeighborhood().equalsIgnoreCase(body.getLocation()))
+                        .collect(Collectors.toList());
+            }
+
+            List<BoardingEntity> newBoardings = new ArrayList<>();
+            for (BoardingEntity boarding : boardings){
+                BoardingEntity newDriver = BoardingEntity.builder()
+                        .id(boarding.getId())
+                        .address(boarding.getAddress())
+                        .price(boarding.getPrice())
+                        .driverId(boarding.getDriverId())
+                        .eventId(boarding.getEventId())
+                        .music(boarding.getMusic())
+                        .snow(boarding.getSnow())
+                        .build();
+
+                newBoardings.add(newDriver);
+                }
+            return boardings;
         } catch (Exception e) {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }

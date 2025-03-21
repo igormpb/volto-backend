@@ -28,10 +28,10 @@ public class BoardingController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
-    @GetMapping("/list")
-    public ResponseEntity All() {
+    @GetMapping("/{id}")
+    public ResponseEntity FindByAccountId(@PathVariable String id) {
         try {
-            var data = boardingService.All();
+            var data = boardingService.findByAccountId(id);
             return ResponseEntity.ok(data);
         } catch (HandleErros e) {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

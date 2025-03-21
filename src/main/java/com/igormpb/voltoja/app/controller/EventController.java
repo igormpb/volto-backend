@@ -5,6 +5,7 @@ import com.igormpb.voltoja.app.service.EventService;
 import com.igormpb.voltoja.domain.entity.BoardingEntity;
 import com.igormpb.voltoja.domain.entity.EventEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
+import com.igormpb.voltoja.domain.request.PostEventFilterRequest;
 import com.igormpb.voltoja.domain.request.PostEventRegisterRequest;
 import com.igormpb.voltoja.domain.response.ResponseErr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ public class EventController {
     EventService eventService;
     @Autowired
     BoardingService boardingService;
-
 
     @PostMapping("/register")
     public ResponseEntity Register(@RequestBody PostEventRegisterRequest body){
@@ -76,10 +76,10 @@ public class EventController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
-    @GetMapping("/{id}/boarding")
-    public ResponseEntity BoardingByEventId(@PathVariable String id) {
+    @PostMapping("/{id}/boarding")
+    public ResponseEntity BoardingByEventId(@PathVariable String id, @RequestBody PostEventFilterRequest body) {
         try {
-            List<BoardingEntity> boardings = boardingService.findAllByEventId(id);
+            List<BoardingEntity> boardings = boardingService.findAllByEventId(id, body);
             return ResponseEntity.ok(boardings);
         }catch (HandleErros e){
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

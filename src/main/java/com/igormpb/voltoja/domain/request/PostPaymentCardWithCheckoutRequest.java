@@ -15,6 +15,7 @@ public class PostPaymentCardWithCheckoutRequest {
 
     private String name;
     private String email;
+    private String documents;
     private String phone;
 
 
@@ -26,6 +27,10 @@ public class PostPaymentCardWithCheckoutRequest {
 
         if (email.isEmpty()) {
             throw new HandleErros("Email do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        if (documents.isEmpty()) {
+            throw new HandleErros("CPF do passageiro é obrigatório", HttpStatus.BAD_REQUEST);
         }
 
         if (phone.isEmpty()) {

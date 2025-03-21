@@ -13,5 +13,7 @@ public interface BoardingRepository extends MongoRepository<BoardingEntity, Stri
     List<BoardingEntity> findByEventId(String eventId);
     @Query(value = "{driver_id: ?0}")
     List<BoardingEntity> findByDriverId(String driverId);
+    @Query(value = "{ 'account_in_boarding': { $elemMatch: { 'account_id': ?0 } } }")
+    List<BoardingEntity> findByAccountId(String accountId);
 
 }

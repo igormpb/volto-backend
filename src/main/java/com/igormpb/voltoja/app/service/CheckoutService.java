@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CheckoutService {
@@ -30,7 +31,7 @@ public class CheckoutService {
     CheckoutRepository checkoutRepository;
 
     public String PaymentCardCheckoutURL(String boardingUUID, List<PostPaymentCardWithCheckoutRequest> request, String accountId) {
-        System.out.println(boardingUUID);
+
         try {
             var boarding = boardingRepository.findById(boardingUUID);
             if (boarding.isEmpty()) {
@@ -47,8 +48,9 @@ public class CheckoutService {
             var price = new Long(boardingEntity.getPrice() * request.size());
             var response = cardAdapterHandler.getAdapter().CreateCheckoutPage(price, name);
 
+            var unicId = UUID.randomUUID().toString();
             //TODO PEGAR O ACCOUNT_ID
-            var data = CheckoutEntity.builder().status(response.status()).paymentId(response.id()).url(response.url()).paymentAt("").updatedAt(LocalDate.now().toString()).createdAt(LocalDate.now().toString()).accountId(accountId).boardingId(boardingEntity.getId()).eventId(eventEntity.getId()).build();
+            var data = CheckoutEntity.builder().status(response.status()).paymentId(response.id()).url(response.url()).paymentAt("").updatedAt(LocalDate.now().toString()).createdAt(LocalDate.now().toString()).accountId(unicId).boardingId(boardingEntity.getId()).eventId(eventEntity.getId()).build();
 
             checkoutRepository.save(data);
             if (boardingEntity.getAccountInBoarding() == null) {
@@ -58,7 +60,7 @@ public class CheckoutService {
 
             request.forEach(r -> {
                 boardingEntity.getAccountInBoarding().add(
-                        AccountInBoarding.builder().id(accountId).Email(r.getEmail()).Phone(r.getPhone()).Name(r.getName()).status("PENDING").build()
+                        AccountInBoarding.builder().id(unicId).accountId(accountId).Email(r.getEmail()).Phone(r.getPhone()).Documents(r.getDocuments()).Name(r.getName()).status("PENDING").build()
                 );
             });
 
