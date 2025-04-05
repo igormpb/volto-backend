@@ -79,7 +79,6 @@ public class EventService {
             }
             event.setUpdatedAt(LocalDate.now().toString());
 
-            // Salvar o documento atualizado
             eventRepository.save(event);
         }catch (Exception e){
             throw new HandleErros("Não foi possivel editar o evento, tente novamente mais tarde", HttpStatus.INTERNAL_SERVER_ERROR);

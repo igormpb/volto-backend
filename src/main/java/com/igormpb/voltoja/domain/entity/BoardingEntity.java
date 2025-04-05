@@ -31,5 +31,4 @@ public class BoardingEntity {
     private String timeToOut;
     @Field("account_in_boarding")
     private List<AccountInBoarding> accountInBoarding;
-
 }

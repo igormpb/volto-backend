@@ -8,6 +8,10 @@ import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.domain.request.PostBoardingRegisterRequest;
 import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +21,14 @@ import java.util.stream.Collectors;
 import java.util.Comparator;
 
 
-
 @Service
 public class BoardingService {
 
     @Autowired
     BoardingRepository boardingRepository;
+
+    @Autowired
+    private MongoTemplate mongoRaw;
 
     public void Register(PostBoardingRegisterRequest body) {
         try {
@@ -47,7 +53,7 @@ public class BoardingService {
         }
     }
 
-    public void EditById(String id, PostBoardingRegisterRequest updatedBoarding){
+    public void EditById(String id, PostBoardingRegisterRequest updatedBoarding) {
         try {
             var boarding = boardingRepository.findById(id).get();
 
@@ -75,7 +81,7 @@ public class BoardingService {
 
             // Salvar o documento atualizado
             boardingRepository.save(boarding);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new HandleErros("Não foi possivel editar a viagem, tente novamente mais tarde", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,30 +94,29 @@ public class BoardingService {
         }
     }
 
-    public List<BoardingEntity> findAllByEventId(String eventId, PostEventFilterRequest body) {
+    public List<BoardingEntity> findAllByEventId(String eventId, String price, String location) {
         try {
-            var boardings = boardingRepository.findByEventId(eventId);
-            if (body.getPrice() != null && !body.getPrice().isEmpty()){
-                if (body.getPrice().equalsIgnoreCase("low")) {
-                    boardings = boardings.stream()
-                            .sorted(Comparator.comparing(BoardingEntity::getPrice))
-                            .collect(Collectors.toList());
-                } else if (body.getPrice().equalsIgnoreCase("high")) {
-                    boardings = boardings.stream()
-                            .sorted(Comparator.comparing(BoardingEntity::getPrice).reversed())
-                            .collect(Collectors.toList());
+
+            Sort sort = Sort.by(Sort.Direction.ASC, "price");
+            if (price != null && !price.isEmpty()) {
+                if ("high".equals(price)) {
+                    sort = Sort.by(Sort.Direction.DESC, "price");
                 }
             }
-            if (body.getLocation() != null && !body.getLocation().isEmpty()){
-                boardings = boardings.stream()
-                        .filter(b -> b.getAddress() != null &&
-                                b.getAddress().getNeighborhood() != null &&
-                                b.getAddress().getNeighborhood().equalsIgnoreCase(body.getLocation()))
-                        .collect(Collectors.toList());
+
+            Query query = new Query();
+            Criteria criteria = Criteria.where("event_id").is(eventId);
+
+            if (location != null && !location.isEmpty()) {
+                criteria = criteria.and("address.neighborhood").is(location);
             }
 
+            query.with(sort);
+            query.addCriteria(criteria);
+            List<BoardingEntity> boardings = mongoRaw.find(query, BoardingEntity.class);
+
             List<BoardingEntity> newBoardings = new ArrayList<>();
-            for (BoardingEntity boarding : boardings){
+            for (BoardingEntity boarding : boardings) {
                 BoardingEntity newDriver = BoardingEntity.builder()
                         .id(boarding.getId())
                         .address(boarding.getAddress())
@@ -121,7 +126,7 @@ public class BoardingService {
                         .build();
 
                 newBoardings.add(newDriver);
-                }
+            }
             return boardings;
         } catch (Exception e) {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);

@@ -23,7 +23,6 @@ public class Validators {
 
 
     public static boolean isCellPhoneValid(String phone) {
-
         String phoneRegex = "^\\d{11}$";
         Pattern pattern = Pattern.compile(phoneRegex);
         return phone != null && pattern.matcher(phone).matches();

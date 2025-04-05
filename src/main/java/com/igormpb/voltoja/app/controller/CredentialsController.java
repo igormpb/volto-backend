@@ -42,7 +42,6 @@ public class CredentialsController {
     }
 
 
-
     @PostMapping("/login")
     public ResponseEntity Login (@RequestBody PostCredentialsLoginRequest body) {
         if (body.Validate() != null) {
