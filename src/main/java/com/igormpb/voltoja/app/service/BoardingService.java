@@ -4,6 +4,7 @@ import com.igormpb.voltoja.domain.entity.BoardingEntity;
 import com.igormpb.voltoja.domain.entity.DriverEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
 import com.igormpb.voltoja.domain.request.PostEventFilterRequest;
+import com.igormpb.voltoja.domain.response.PostBoardingResponse;
 import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.domain.request.PostBoardingRegisterRequest;
 import com.mongodb.MongoException;
@@ -88,7 +89,7 @@ public class BoardingService {
         }
     }
 
-    public List<BoardingEntity> findAllByEventId(String eventId, PostEventFilterRequest body) {
+    public List<PostBoardingResponse> findAllByEventId(String eventId, PostEventFilterRequest body) {
         try {
             var boardings = boardingRepository.findByEventId(eventId);
             if (body.getPrice() != null && !body.getPrice().isEmpty()){
@@ -110,19 +111,26 @@ public class BoardingService {
                         .collect(Collectors.toList());
             }
 
-            List<BoardingEntity> newBoardings = new ArrayList<>();
-            for (BoardingEntity boarding : boardings){
-                BoardingEntity newDriver = BoardingEntity.builder()
-                        .id(boarding.getId())
-                        .address(boarding.getAddress())
-                        .price(boarding.getPrice())
-                        .driverId(boarding.getDriverId())
-                        .eventId(boarding.getEventId())
-                        .build();
+            List<PostBoardingResponse> newBoardings = new ArrayList<>();
+            for (BoardingEntity boarding : boardings) {
+                try {
+                    PostBoardingResponse newBoarding = new PostBoardingResponse(
+                            boarding.getId(),
+                            boarding.getAddress(),
+                            boarding.getPrice(),
+                            boarding.getDriverId(),
+                            boarding.getEventId(),
+                            boarding.getTimeToGo(),
+                            boarding.getTimeToOut(),
+                            boarding.getAccountInBoarding() != null ? boarding.getAccountInBoarding().size() : 0
+                    );
 
-                newBoardings.add(newDriver);
+                    newBoardings.add(newBoarding);
+                }catch (Exception e){
+                    System.out.println(e);
                 }
-            return boardings;
+            }
+            return newBoardings;
         } catch (Exception e) {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }

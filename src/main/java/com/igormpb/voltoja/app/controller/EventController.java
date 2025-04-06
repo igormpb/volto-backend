@@ -7,6 +7,7 @@ import com.igormpb.voltoja.domain.entity.EventEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
 import com.igormpb.voltoja.domain.request.PostEventFilterRequest;
 import com.igormpb.voltoja.domain.request.PostEventRegisterRequest;
+import com.igormpb.voltoja.domain.response.PostBoardingResponse;
 import com.igormpb.voltoja.domain.response.ResponseErr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,7 +80,7 @@ public class EventController {
     @PostMapping("/{id}/boarding")
     public ResponseEntity BoardingByEventId(@PathVariable String id, @RequestBody PostEventFilterRequest body) {
         try {
-            List<BoardingEntity> boardings = boardingService.findAllByEventId(id, body);
+            List<PostBoardingResponse> boardings = boardingService.findAllByEventId(id, body);
             return ResponseEntity.ok(boardings);
         }catch (HandleErros e){
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());

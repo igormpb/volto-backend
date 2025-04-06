@@ -12,7 +12,7 @@ public class PixAdapterHandler {
     private final Map<String, IPixAdapter> adapters = new HashMap<>();
     private final String adapterKey = "abacatepay";
     public PixAdapterHandler() {
-        adapters.put("stripe", new AcabatePayPix());
+        adapters.put("abacatepay", new AcabatePayPix());
     }
 
     public IPixAdapter getAdapter() {
