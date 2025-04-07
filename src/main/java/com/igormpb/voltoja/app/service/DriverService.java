@@ -61,6 +61,7 @@ public class DriverService {
             throw new HandleErros("não foi possível listar os motoristas, tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
     }
+
     public DriverEntity DetailByPlate(String plate){
         try {
             System.out.println("Buscando motorista com plate: " + plate);

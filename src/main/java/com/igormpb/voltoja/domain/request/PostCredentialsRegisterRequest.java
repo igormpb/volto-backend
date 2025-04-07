@@ -35,6 +35,7 @@ public class PostCredentialsRegisterRequest {
         }
 
         if (!Validators.isCellPhoneValid(this.phoneNumber)) {
+            System.out.println(this.phoneNumber);
             return "número de celular é inválido";
         }
 
