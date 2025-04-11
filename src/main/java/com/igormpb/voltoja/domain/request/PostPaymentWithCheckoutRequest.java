@@ -37,7 +37,6 @@ public class PostPaymentWithCheckoutRequest {
         }
 
         if (!Validators.CPFOrCNPJIsValid(document)) {
-
             throw new HandleErros("Documento do responsável é inválido", HttpStatus.BAD_REQUEST);
         }
 

@@ -21,6 +21,7 @@ public class BoardingEntity {
     private String id;
     private AddressEntity address;
     private Integer price;
+    private Integer tax;
     @Field("driver_id")
     private String driverId;
     @Field("event_id")
@@ -31,5 +32,6 @@ public class BoardingEntity {
     private String timeToOut;
     @Field("account_in_boarding")
     private List<AccountInBoarding> accountInBoarding;
+    private int accountInBoardingCount;
 
 }

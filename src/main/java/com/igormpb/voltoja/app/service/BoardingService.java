@@ -1,6 +1,7 @@
 package com.igormpb.voltoja.app.service;
 
 import com.igormpb.voltoja.domain.entity.BoardingEntity;
+import com.igormpb.voltoja.domain.entity.ControlConfig;
 import com.igormpb.voltoja.domain.entity.DriverEntity;
 import com.igormpb.voltoja.domain.errors.HandleErros;
 import com.igormpb.voltoja.domain.request.PostEventFilterRequest;
@@ -113,17 +114,24 @@ public class BoardingService {
             query.with(sort);
             query.addCriteria(criteria);
             List<BoardingEntity> boardings = mongoRaw.find(query, BoardingEntity.class);
-
+            ControlConfig controlConfig = new ControlConfig();
             List<BoardingEntity> newBoardings = new ArrayList<>();
             for (BoardingEntity boarding : boardings) {
                 BoardingEntity newDriver = BoardingEntity.builder()
                         .id(boarding.getId())
                         .address(boarding.getAddress())
+                        .price(boarding.getPrice())
+                        .driverId(boarding.getDriverId())
+                        .eventId(boarding.getEventId())
+                        .timeToGo(boarding.getTimeToGo())
+                        .timeToOut(boarding.getTimeToOut())
+                        .accountInBoardingCount(boarding.getAccountInBoarding() != null ? boarding.getAccountInBoarding().size() : 0)
+                        .tax(controlConfig.getTax(boarding.getPrice()))
                         .build();
 
                 newBoardings.add(newDriver);
             }
-            return boardings;
+            return newBoardings;
         } catch (Exception e) {
             throw new HandleErros("não foi listar os eventos, por favor tente novamente mais tarde", HttpStatus.BAD_REQUEST);
         }
