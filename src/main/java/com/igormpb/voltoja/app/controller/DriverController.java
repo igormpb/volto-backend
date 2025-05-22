@@ -16,19 +16,19 @@ public class DriverController {
     @Autowired
     DriverService driverService;
 
-    @PostMapping("/register")
-    public ResponseEntity Register (@RequestBody PostDriverRegisterRequest body) {
-        if (body.Validate() != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
-        }
-        try {
-            driverService.Register(body);
-            return ResponseEntity.noContent().build();
-        }catch (HandleErros e) {
-            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
-        }
-
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity Register (@RequestBody PostDriverRegisterRequest body) {
+//        if (body.Validate() != null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
+//        }
+//        try {
+//            driverService.Register(body);
+//            return ResponseEntity.noContent().build();
+//        }catch (HandleErros e) {
+//            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+//        }
+//
+//    }
 
     @GetMapping("/list")
     public ResponseEntity All(){
@@ -39,15 +39,15 @@ public class DriverController {
             return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
         }
     }
-    @PostMapping("/edit/{id}")
-    public ResponseEntity EditById(@PathVariable(value = "id") String id , @RequestBody PostDriverRegisterRequest body){
-        try {
-            driverService.EditById(id,body);
-            return ResponseEntity.noContent().build();
-        }catch (HandleErros e){
-            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
-        }
-    }
+//    @PostMapping("/edit/{id}")
+//    public ResponseEntity EditById(@PathVariable(value = "id") String id , @RequestBody PostDriverRegisterRequest body){
+//        try {
+//            driverService.EditById(id,body);
+//            return ResponseEntity.noContent().build();
+//        }catch (HandleErros e){
+//            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+//        }
+//    }
 
     @GetMapping("/detail/{plate}")
     public ResponseEntity DetailByPlate(@PathVariable(value = "id") String plate){

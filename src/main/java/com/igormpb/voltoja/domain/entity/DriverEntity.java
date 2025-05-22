@@ -23,10 +23,14 @@ public class DriverEntity {
     @Id
     private String id;
     private String name;
+    private String password;
+    private String email;
     private String type;
     private String quantity;
     private String plate;
-    private ArrayList<String> documents;
+    private String phoneNumber;
     private Boolean music;
     private Boolean snow;
+    private Boolean whats;
+    private Boolean accept;
 }

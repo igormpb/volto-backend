@@ -4,6 +4,8 @@ package com.igormpb.voltoja.app.controller;
 import com.igormpb.voltoja.app.service.CredentialsService;
 import com.igormpb.voltoja.domain.adapter.ICardAdapter;
 import com.igormpb.voltoja.domain.errors.HandleErros;
+import com.igormpb.voltoja.domain.request.PostCredentialsRegisterDriverRequest;
+import com.igormpb.voltoja.domain.request.PostCredentialsSetPasswordRequest;
 import com.igormpb.voltoja.infra.repository.AccountRepository;
 import com.igormpb.voltoja.domain.request.PostCredentialsLoginRequest;
 import com.igormpb.voltoja.domain.request.PostCredentialsRegisterRequest;
@@ -19,9 +21,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/credentials")
 public class CredentialsController {
-
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     private CredentialsService credentialsService;
@@ -41,7 +40,33 @@ public class CredentialsController {
 
     }
 
+    @PostMapping("/driver/register")
+    public ResponseEntity RegisterDriver (@RequestBody PostCredentialsRegisterDriverRequest body) {
+        if (body.Validate() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
+        }
+        try {
+            credentialsService.RegisterDriver(body);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e) {
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
 
+    }
+
+    @PostMapping("/driver/register/password")
+    public ResponseEntity RegisterDriverPassword (@RequestBody PostCredentialsSetPasswordRequest body) {
+        if (body.Validate() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
+        }
+        try {
+            credentialsService.RegisterPasswordDriver(body);
+            return ResponseEntity.noContent().build();
+        }catch (HandleErros e) {
+            return ResponseEntity.status(e.GetResponseError().status()).body(e.GetResponseError());
+        }
+
+    }
 
     @PostMapping("/login")
     public ResponseEntity Login (@RequestBody PostCredentialsLoginRequest body) {
@@ -49,12 +74,21 @@ public class CredentialsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErr(body.Validate(), HttpStatus.BAD_REQUEST));
         }
         try {
-            Map<String, Object> response = credentialsService.Login(body);
+            Map<String, Object> response = Map.of();
+
+            if (!body.getDriver()) {
+                response = credentialsService.Login(body);
+
+            }
+            if(body.getDriver()){
+                response = credentialsService.LoginDriver(body);
+
+            }
             return ResponseEntity.ok(new PostCredentialsLoginResponse(
                     (String) response.get("token"),
                     (String) response.get("email"),
                     (String) response.get("name"),
-                    (String) response.get("number"),
+                    (String) response.get("phoneNumber"),
                     (String) response.get("accountId")
             ));
         } catch (HandleErros e) {

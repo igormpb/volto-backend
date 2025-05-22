@@ -11,5 +11,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
        registry.addInterceptor( new AuthMiddleware()).addPathPatterns("/checkout/**");
+       registry.addInterceptor( new AuthMiddleware()).addPathPatterns("/credentials/driver/register/password");
+        registry.addInterceptor( new AuthMiddleware()).addPathPatterns("/credentials/driver-config/**");
     }
 }

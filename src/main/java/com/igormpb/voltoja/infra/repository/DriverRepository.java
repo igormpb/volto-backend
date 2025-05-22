@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DriverRepository extends MongoRepository<DriverEntity, String> {
     @Query(value = "{plate: { $regex: ?0, $options: 'i' }}")
     DriverEntity findByPlate(String plate);
+    @Query(value = "{email: ?0}")
+    DriverEntity findDriverByEmail(String email);
 }

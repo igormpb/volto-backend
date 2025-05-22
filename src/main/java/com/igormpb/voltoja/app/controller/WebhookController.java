@@ -1,6 +1,8 @@
 package com.igormpb.voltoja.app.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonSyntaxException;
+import com.igormpb.voltoja.domain.response.AbacatePayWebhookReponse;
 import com.igormpb.voltoja.infra.repository.BoardingRepository;
 import com.igormpb.voltoja.infra.repository.CheckoutRepository;
 import com.stripe.Stripe;
@@ -107,11 +109,67 @@ public class WebhookController {
     public ResponseEntity<String> handleAbacatePayWebhook(HttpServletRequest request) {
         try {
             String payload = new BufferedReader(request.getReader()).lines().collect(Collectors.joining("\n"));
-            System.out.println("ℹ️ Evento não tratado: " + payload);
-            return ResponseEntity.ok("✅ Webhook recebido com sucesso!");
+            System.out.println("✅ Payload recebido: " + payload);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            AbacatePayWebhookReponse webhookPayload = objectMapper.readValue(payload, AbacatePayWebhookReponse.class);
+
+            // Verifica tipo de evento
+            if ("billing.paid".equals(webhookPayload.getEvent())) {
+                String billingId = webhookPayload.getData().getBilling().getId();
+                String customerId = webhookPayload.getData().getBilling().getCustomer().getId();
+                int amount = webhookPayload.getData().getBilling().getPaidAmount();
+
+                System.out.println("💰 Pagamento PIX recebido!");
+                System.out.println("🔖 Billing ID: " + billingId);
+                System.out.println("👤 Customer ID: " + customerId);
+                System.out.println("💲 Valor pago: " + amount);
+
+                // Busca o checkout no banco pelo Billing ID
+                var checkout = checkoutRepository.findByPaymentId(billingId);
+                if (checkout == null) {
+                    System.out.println("⚠️ Checkout não encontrado para Billing ID: " + billingId);
+                    return ResponseEntity.badRequest().body("⚠️ Checkout não encontrado.");
+                }
+
+                // Atualiza status para PAID
+                checkout.setStatus("PAID");
+                var boardingID = checkout.getBoardingId();
+
+                // Busca o boarding
+                var itemBoarding = boardingReposity.findById(boardingID);
+                if (itemBoarding.isEmpty()) {
+                    System.out.println("⚠️ Boarding não encontrado para ID: " + boardingID);
+                    return ResponseEntity.badRequest().body("⚠️ Boarding não encontrado.");
+                }
+
+                var accountId = checkout.getAccountId();
+                var boarding = itemBoarding.get();
+
+                // Atualiza status da conta no boarding
+                boarding.getAccountInBoarding().forEach(acc -> {
+                    if (acc.getId().equals(accountId)) {
+                        acc.setStatus("PAID");
+                    }
+                });
+
+                // Salva as alterações
+                checkoutRepository.save(checkout);
+                boardingReposity.save(boarding);
+
+                System.out.println("✅ Checkout e Boarding atualizados com sucesso.");
+
+                return ResponseEntity.ok("✅ Webhook PIX processado e atualizado com sucesso!");
+
+            } else {
+                System.out.println("ℹ️ Evento não tratado: " + webhookPayload.getEvent());
+                return ResponseEntity.ok("✅ Webhook recebido, mas evento não tratado.");
+            }
 
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Erro interno ao processar webhook.");
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("❌ Erro interno ao processar webhook PIX.");
         }
+
     }
 }

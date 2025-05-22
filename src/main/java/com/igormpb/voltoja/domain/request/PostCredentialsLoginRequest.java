@@ -15,6 +15,7 @@ public class PostCredentialsLoginRequest {
 
     private String email = "";
     private String password = "";
+    private Boolean driver = false;
 
     public String Validate() {
         if (this.email.isEmpty()) {
